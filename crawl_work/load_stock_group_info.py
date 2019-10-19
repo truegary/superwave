@@ -185,7 +185,7 @@ if __name__ == '__main__':
         if not(stock_in_group_data is None):
             all_stock_in_group_data.extend(stock_in_group_data)
 
-    pd_stock_type = pd.DataFrame(data=all_stock_in_group_data, columns={"Main_type", "sub_type", "code", "name"})
+    pd_stock_type = pd.DataFrame(data=all_stock_in_group_data, columns=['Main_type', 'sub_type', 'code', 'stockname'])
     pd_stock_type.to_csv(OUT_FILE, index=None)
 
     print("Done!")
