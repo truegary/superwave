@@ -102,9 +102,20 @@ def load_stock_data(stock_code, first_date=None, last_date=None,keep_no_trade=0)
     
     if keep_no_trade == 0:
         load_data = load_data[(load_data['收盘价'] > 0.0)]
-    
-    
+
     return load_data[(load_data['日期'] >= data_first_date) & (load_data['日期'] <= data_last_date)]
+
+
+def load_multi_stock_datas(stock_code_list, first_date=None, last_date=None, keep_no_trade=0):
+    m_close = None
+    for scode in stock_code_list:
+        m_data = load_stock_data(scode, first_date, last_date, keep_no_trade)
+        if m_close is None:
+            m_close = pd.DataFrame(data=m_data['收盘价'])
+            m_close.columns = [scode]
+        else:
+            m_close.insert(0, scode, m_data['收盘价'])
+    return m_close
 
 
 def format_code(in_value):
