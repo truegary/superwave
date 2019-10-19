@@ -110,6 +110,8 @@ def load_multi_stock_datas(stock_code_list, first_date=None, last_date=None, kee
     m_close = None
     for scode in stock_code_list:
         m_data = load_stock_data(scode, first_date, last_date, keep_no_trade)
+        if (m_data is None) or (len(m_data) == 0):
+            continue
         if m_close is None:
             m_close = pd.DataFrame(data=m_data['收盘价'])
             m_close.columns = [scode]
@@ -127,3 +129,16 @@ def format_code(in_value):
         return None
     
     return value_str.zfill(6)
+
+
+def load_stockcode_in_catigery(level1_name, level2_name=None):
+    code_data = pd.read_csv(constdef.stock_code_in_categery, dtype=object)
+    code_data.columns = ['Main_type', 'sub_type', 'code', 'stockname']
+
+    code_data = code_data[code_data['Main_type'] == level1_name].copy()
+    if (level2_name is None) or (level2_name == ''):
+        return code_data['code'].values.tolist()
+
+    code_data = code_data[code_data['sub_type'] == level2_name].copy()
+    return code_data['code'].values.tolist()
+
