@@ -5,6 +5,7 @@ app_conf_dir = "/Volumes/macdisk2/garywork/python_work/superwave/conf/"
 code_file = "/Volumes/macdisk2/garywork/stock/stockdata/codes/fundcodelist.csv"
 stock_code_file = "/Volumes/macdisk2/garywork/stock/stockdata/codes/stockcodelist.csv"
 data_path = "/Volumes/macdisk2/garywork/stock/stockdata/backtesting/hisdata/"
+stock_code_in_categery = "/Volumes/macdisk2/garywork/stock/common_data/stock_in_type.csv"
 
 report_path = "/Volumes/macdisk2/garywork/stock/stockdata/report/"
 
