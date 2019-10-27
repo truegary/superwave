@@ -6,7 +6,7 @@
 from stockutil.dataloadutil.loadfundutil import load_stock_data
 
 
-def year_jump_chance_checker(stockcode, year, down_rate=0.4, min_trade_days=60, e_rate=None):
+def year_jump_chance_checker(stockcode, year, down_rate=0.4, min_trade_days=60, e_earn_rate=None):
     s_data = load_stock_data(stockcode)
     data_in_year = s_data[s_data['日期'].str[0:4] == str(year)]
     if len(data_in_year) < min_trade_days:
@@ -36,15 +36,25 @@ def year_jump_chance_checker(stockcode, year, down_rate=0.4, min_trade_days=60, 
     if block_low_lastyear >= open_year_price:
         isTargetStock = False
 
-
-    if e_rate is None:
+    if e_earn_rate is None:
         return isTargetStock
 
+    data_in_nextyear = s_data[s_data['日期'].str[0:4] == str(year + 1)]
+    if len(data_in_nextyear) < min_trade_days:
+        return [isTargetStock, -1, -1]
 
-    return None
+    next_open_price = data_in_nextyear.head(1)['开盘价'].values[0]
+    next_high_price = max(data_in_nextyear['最高价'])
+
+    next_earn = (next_high_price - next_open_price)/next_open_price
+
+    if next_earn >= e_earn_rate:
+        return [isTargetStock, 0, next_earn]
+    else:
+        return [isTargetStock, 1, next_earn]
 
 
 if __name__ == '__main__':
-    rtn_result = year_jump_chance_checker("600036", 2008, 0.1)
+    rtn_result = year_jump_chance_checker("600036", 2008, 0.4, e_earn_rate=0.1)
     print(rtn_result)
 
