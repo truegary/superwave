@@ -48,10 +48,14 @@ def year_jump_chance_checker(stockcode, year, down_rate=0.4, min_trade_days=60, 
 
     next_earn = (next_high_price - next_open_price)/next_open_price
 
+    val_isTargetStock = 0
+    if not isTargetStock:
+        val_isTargetStock = 1
+
     if next_earn >= e_earn_rate:
-        return [isTargetStock, 0, next_earn]
+        return [val_isTargetStock, 0, next_earn]
     else:
-        return [isTargetStock, 1, next_earn]
+        return [val_isTargetStock, 1, next_earn]
 
 
 if __name__ == '__main__':
