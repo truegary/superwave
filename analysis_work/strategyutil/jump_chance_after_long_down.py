@@ -18,12 +18,17 @@ def year_jump_chance_checker(stockcode, year, down_rate=0.4, min_trade_days=60, 
     if len(data_in_pre2year) < 1:
         return None
 
+    data_in_nextyear = s_data[s_data['日期'].str[0:4] == str(year + 1)]
+    if len(data_in_nextyear) < 1:
+        return None
+
     close_year_price = data_in_year.tail(1)['收盘价'].values[0]
     open_year_price = data_in_year.head(1)['开盘价'].values[0]
-    block_low_lastyear = data_in_preyear.tail(1)['收盘价'].values[0]
-    open_lastyear = data_in_preyear.head(1)['收盘价'].values[0]
-    if block_low_lastyear > open_lastyear:
-        block_low_lastyear = open_lastyear
+    block_low_year = data_in_year.tail(1)['收盘价'].values[0]
+
+    open_next_price = data_in_nextyear.head(1)['开盘价'].values[0]
+    if block_low_year > open_year_price:
+        block_low_year = open_year_price
 
     stock_down_rate = (close_year_price - open_year_price)/open_year_price
 
@@ -33,13 +38,18 @@ def year_jump_chance_checker(stockcode, year, down_rate=0.4, min_trade_days=60, 
     if stock_down_rate > (0 - down_rate):
         isTargetStock = False
 
-    if block_low_lastyear >= open_year_price:
+    islowopen = 0
+    if block_low_year > open_next_price:
+        islowopen = 1
         isTargetStock = False
 
-    if e_earn_rate is None:
-        return isTargetStock
+    val_isTargetStock = 0
+    if not isTargetStock:
+        val_isTargetStock = 1
 
-    data_in_nextyear = s_data[s_data['日期'].str[0:4] == str(year + 1)]
+    if e_earn_rate is None:
+        return [val_isTargetStock, islowopen, stock_down_rate]
+
     if len(data_in_nextyear) < min_trade_days:
         return [isTargetStock, -1, -1]
 
@@ -48,17 +58,13 @@ def year_jump_chance_checker(stockcode, year, down_rate=0.4, min_trade_days=60, 
 
     next_earn = (next_high_price - next_open_price)/next_open_price
 
-    val_isTargetStock = 0
-    if not isTargetStock:
-        val_isTargetStock = 1
-
     if next_earn >= e_earn_rate:
-        return [val_isTargetStock, 0, next_earn]
+        return [val_isTargetStock, islowopen, stock_down_rate, 0, next_earn]
     else:
-        return [val_isTargetStock, 1, next_earn]
+        return [val_isTargetStock, islowopen, stock_down_rate, 1, next_earn]
 
 
 if __name__ == '__main__':
-    rtn_result = year_jump_chance_checker("600036", 2008, 0.4, e_earn_rate=0.1)
+    rtn_result = year_jump_chance_checker("600036", 2017, 0.4, e_earn_rate=0.1)
     print(rtn_result)
 
