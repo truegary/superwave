@@ -102,9 +102,22 @@ def load_stock_data(stock_code, first_date=None, last_date=None,keep_no_trade=0)
     
     if keep_no_trade == 0:
         load_data = load_data[(load_data['收盘价'] > 0.0)]
-    
-    
+
     return load_data[(load_data['日期'] >= data_first_date) & (load_data['日期'] <= data_last_date)]
+
+
+def load_multi_stock_datas(stock_code_list, first_date=None, last_date=None, keep_no_trade=0):
+    m_close = None
+    for scode in stock_code_list:
+        m_data = load_stock_data(scode, first_date, last_date, keep_no_trade)
+        if (m_data is None) or (len(m_data) == 0):
+            continue
+        if m_close is None:
+            m_close = pd.DataFrame(data=m_data['收盘价'])
+            m_close.columns = [scode]
+        else:
+            m_close.insert(0, scode, m_data['收盘价'])
+    return m_close
 
 
 def format_code(in_value):
@@ -116,3 +129,16 @@ def format_code(in_value):
         return None
     
     return value_str.zfill(6)
+
+
+def load_stockcode_in_catigery(level1_name, level2_name=None):
+    code_data = pd.read_csv(constdef.stock_code_in_categery, dtype=object)
+    code_data.columns = ['Main_type', 'sub_type', 'code', 'stockname']
+
+    code_data = code_data[code_data['Main_type'] == level1_name].copy()
+    if (level2_name is None) or (level2_name == ''):
+        return code_data['code'].values.tolist()
+
+    code_data = code_data[code_data['sub_type'] == level2_name].copy()
+    return code_data['code'].values.tolist()
+
