@@ -19,7 +19,7 @@ group_ZONE_flag = ["地域板块", "popmenu_rb"]
 group_SFC_flag = ["证监会行业", "popmenu_fb"]
 group_global_flag = ["全球行业", "popmenu_gb"]
 MAX_STOCK_COUNT_OFTYPE = 9
-OUT_FILE = "/Volumes/macdisk2/garywork/stock/common_data/stock_in_type.csv"
+OUT_FILE = "/workdata/common_data/stock_in_type.csv"
 
 def doCrawlGroupIndex(page_url):
     page_data = None
