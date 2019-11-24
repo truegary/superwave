@@ -21,6 +21,7 @@ group_global_flag = ["全球行业", "popmenu_gb"]
 MAX_STOCK_COUNT_OFTYPE = 9
 OUT_FILE = "/workdata/common_data/stock_in_type.csv"
 
+
 def doCrawlGroupIndex(page_url):
     page_data = None
     try_times = 0
