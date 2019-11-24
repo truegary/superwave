@@ -142,3 +142,17 @@ def load_stockcode_in_catigery(level1_name, level2_name=None):
     code_data = code_data[code_data['sub_type'] == level2_name].copy()
     return code_data['code'].values.tolist()
 
+def load_stock_month_data():
+    stock_data = pd.read_csv(constdef.stock_month_file,
+                             dtype={"时间":str, "代码":str, "名称":str, "交易状态":str, "是否涨停":str, "是否跌停":str})
+
+    stock_data['成交额'] = stock_data['成交额'].map(lambda x: ('%.2f') % x)
+
+    for i in range(3, 9):
+        stock_data.iloc[:, i] = (stock_data.iloc[:, i]).map(lambda x: ('%.2f') % x)
+
+    stock_data['成交量'] = stock_data['成交量'].fillna(0).astype(int)
+    return stock_data
+
+
+
